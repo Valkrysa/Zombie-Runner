@@ -3,15 +3,27 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : MonoBehaviour {
-    
-    public Transform spawnPointsParent;
-    public bool respawnPlayer = false;
 
+    public Helicopter helicopter;
+    public Transform spawnPointsParent;
+    public AudioClip whatHappened;
+
+    private AudioSource innerVoice;
+    private bool respawnPlayer = false;
     private Transform[] spawnPoints;
     private bool lastToggle = false;
 
     public void Start() {
         spawnPoints = spawnPointsParent.GetComponentsInChildren<Transform>();
+
+        AudioSource[] audioSources = GetComponents<AudioSource>();
+        foreach (AudioSource audioSource in audioSources) {
+            if (audioSource.priority == 1) {
+                innerVoice = audioSource;
+            }
+        }
+        innerVoice.clip = whatHappened;
+        innerVoice.Play();
     }
 
     void Update() {
@@ -26,5 +38,9 @@ public class Player : MonoBehaviour {
     public void ReSpawn () {
         int randomSpawnPoint = Random.Range(1, spawnPoints.Length);
         transform.position = spawnPoints[randomSpawnPoint].transform.position;
+    }
+
+    void OnFindClearArea () {
+        helicopter.Call();
     }
 }
