@@ -4,34 +4,23 @@ using UnityEngine;
 
 public class Player : MonoBehaviour {
 
-    public Helicopter helicopter;
+    public GameObject flarePrefab;
     public Transform spawnPointsParent;
-    public AudioClip whatHappened;
-
-    private AudioSource innerVoice;
+    
     private bool respawnPlayer = false;
     private Transform[] spawnPoints;
-    private bool lastToggle = false;
+    private bool lastRespawnToggle = false;
 
     public void Start() {
         spawnPoints = spawnPointsParent.GetComponentsInChildren<Transform>();
-
-        AudioSource[] audioSources = GetComponents<AudioSource>();
-        foreach (AudioSource audioSource in audioSources) {
-            if (audioSource.priority == 1) {
-                innerVoice = audioSource;
-            }
-        }
-        innerVoice.clip = whatHappened;
-        innerVoice.Play();
     }
 
     void Update() {
-        if (lastToggle != respawnPlayer) {
+        if (lastRespawnToggle != respawnPlayer) {
             respawnPlayer = false;
             ReSpawn();
         } else {
-            lastToggle = respawnPlayer;
+            lastRespawnToggle = respawnPlayer;
         }
     }
 
@@ -41,6 +30,10 @@ public class Player : MonoBehaviour {
     }
 
     void OnFindClearArea () {
-        helicopter.Call();
+        Invoke("DropFlare", 3f);
+    }
+
+    void DropFlare () {
+        Instantiate(flarePrefab, transform.position, transform.rotation);
     }
 }

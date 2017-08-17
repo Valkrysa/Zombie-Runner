@@ -8,28 +8,32 @@ public class ClearArea : MonoBehaviour {
     public float waitTimeToTriggerHelicopter = 1f;
     
     private float timeSinceLastTrigger = 0f;
-    
-	void Start () {
-        timeSinceLastTrigger = Time.time;
-    }
+    private bool foundClearArea = false;
 	
 	void Update () {
         timeSinceLastTrigger += Time.deltaTime;
 
-        if (timeSinceLastTrigger > waitTimeToTriggerHelicopter && Time.realtimeSinceStartup > 10f) {
+        if (timeSinceLastTrigger > waitTimeToTriggerHelicopter && Time.realtimeSinceStartup > 10f && !foundClearArea) {
             SendMessageUpwards("OnFindClearArea");
+            foundClearArea = true;
         }
     }
 
-    void OnTriggerExit () {
-        timeSinceLastTrigger = 0f;
+    void OnTriggerExit (Collider collider) {
+        if (collider.tag != "Player") {
+            timeSinceLastTrigger = 0f;
+        }
     }
 
-    void OnTriggerEnter () {
-        timeSinceLastTrigger = 0f;
+    void OnTriggerEnter (Collider collider) {
+        if (collider.tag != "Player") {
+            timeSinceLastTrigger = 0f;
+        }
     }
 
-    void OnTriggerStay () {
-        timeSinceLastTrigger = 0f;
+    void OnTriggerStay (Collider collider) {
+        if (collider.tag != "Player") {
+            timeSinceLastTrigger = 0f;
+        }
     }
 }
